@@ -1,68 +1,96 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eberger <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/01 11:57:43 by eberger           #+#    #+#             */
+/*   Updated: 2023/03/06 13:59:12 by eberger          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
+
+int	test_map_close(t_list *list, t_maps *map)
+{
+	int		i;
+	t_list	*elem;
+	char	*str;
+
+	i = 0;
+	elem = list;
+	while (elem)
+	{
+		str = elem->content;
+		if (!test_close(ft_lstsize(list), i, str))
+			return (0);
+		elem = elem->next;
+		i++;
+	}
+	map->list = list;
+	return (1);
+}
 
 int	create_map(t_maps *map)
 {
 	t_list	*lst;
 	char	*next_line;
 
-	map->size_box = 32;	
-	map->fd = open("./map.ber", O_RDONLY);
+	map->fd = open(map->path, O_RDONLY);
 	if (map->fd < 0)
-		return (0);
+		return (error_map("map introuvable", NULL));
 	next_line = get_next_line(map->fd);
-	lst = ft_lstnew(next_line);
+	lst = NULL;
 	map->line = 0;
 	map->column = ft_strlen(next_line) - 1;
 	while (next_line)
 	{
 		next_line[ft_strlen(next_line) - 1] = 0;
-		if (map->column != (int)ft_strlen(next_line))
-			return (0);//free la liste si erreur
-		next_line = get_next_line(map->fd);
 		ft_lstadd_back(&lst, ft_lstnew(next_line));
+		if (map->column != (int)ft_strlen(next_line))
+			return (error_map("map : lignes de longueur differentes", &(lst)));
+		next_line = get_next_line(map->fd);
 		(map->line)++;
 	}
-	map->list = lst;
-	map->width = map->size_box * map->column;
-	map->height = map->size_box * map->line;
+	if (!test_map_close(lst, map))
+		return (error_map("map: pas encadre par des obstacles", &(lst)));
+	map->width = BOX * map->column;
+	map->height = BOX * map->line;
 	close(map->fd);
 	return (1);
 }
 
-int	print_pers(t_vars *vars)
+void	print(t_vars *vars, mlx_image_t *img, int *loc, int z)
 {
-	int	x;
-	int	y;
+	int	inst_img;
 
-	x = vars->pers->x;
-	y = vars->pers->y;
-	if (vars->pers->orientation == 0)
-		mlx_image_to_window(vars->mlx, vars->assets->img_pers_bottom, 32 * x + 7, 32 * y + 8);
-	else if (vars->pers->orientation == 1)
-		mlx_image_to_window(vars->mlx, vars->assets->img_pers_top, 32 * x + 7, 32 * y + 8);
-	else if (vars->pers->orientation == 2)
-		mlx_image_to_window(vars->mlx, vars->assets->img_pers_left, 32 * x + 7, 32 * y + 8);
-	else if (vars->pers->orientation == 3)
-		mlx_image_to_window(vars->mlx, vars->assets->img_pers_right, 32 * x + 7, 32 * y + 8);
-	return (1);
+	inst_img = mlx_image_to_window(vars->mlx, img, loc[1], loc[0]);
+	mlx_set_instance_depth(&(img->instances[inst_img]), z);
 }
 
 int	print_case(char c, int *loc, t_vars *vars)
 {
+	int	pix[2];
+
+	pix[0] = loc[0] * BOX;
+	pix[1] = loc[1] * BOX;
+	if (!ft_strchr("01CEP", c))
+		return (error_map("La carte ne peut contenir aue 01CEP", NULL));
 	if (c == '1')
-		mlx_image_to_window(vars->mlx, vars->assets->img_lava, 32 * loc[1], 32 * loc[0]);
+		print(vars, vars->assets->img_lava, pix, 1);
 	else
-		mlx_image_to_window(vars->mlx, vars->assets->img_sol, 32 * loc[1], 32 * loc[0]);
+		print(vars, vars->assets->img_sol, pix, 1);
 	if (c == 'C')
-		mlx_image_to_window(vars->mlx, vars->assets->img_items_lock, 32 * loc[1], 32 * loc[0]);
+		print(vars, vars->assets->img_items_lock, pix, 2);
 	if (c == 'E')
-		mlx_image_to_window(vars->mlx, vars->assets->img_close_door, 32 * loc[1], 32 * loc[0]);
+		print(vars, vars->assets->img_close_door, pix, 2);
 	if (c == 'P' && vars->pers->x == -1 && vars->pers->y == -1)
 	{
 		vars->pers->x = loc[1];
 		vars->pers->y = loc[0];
 	}
-	return (0);
+	return (1);
 }	
 
 int	show_map(t_vars *vars)
@@ -72,7 +100,8 @@ int	show_map(t_vars *vars)
 	int		loc[2];
 
 	list = vars->map->list;
-	vars->assets = init_imgs(vars->mlx);
+	if (!init_imgs(vars))
+		return (0);
 	loc[0] = 0;
 	while (loc[0] < vars->map->line)
 	{
@@ -80,7 +109,8 @@ int	show_map(t_vars *vars)
 		str = list->content;
 		while (loc[1] < vars->map->column)
 		{
-			print_case(str[loc[1]], loc, vars);
+			if (!print_case(str[loc[1]], loc, vars))
+				return (0);
 			(loc[1])++;
 		}
 		list = list->next;

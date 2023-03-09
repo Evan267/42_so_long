@@ -1,4 +1,4 @@
-SRCS	= main.c get_next_line.c get_next_line_utils.c map.c assets.c algo.c
+SRCS	= main.c get_next_line.c get_next_line_utils.c map.c assets.c algo.c perso.c hook.c tools.c end.c
 
 OBJS	= ${SRCS:.c=.o}
 
