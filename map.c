@@ -6,7 +6,7 @@
 /*   By: eberger <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 11:57:43 by eberger           #+#    #+#             */
-/*   Updated: 2023/03/06 13:59:12 by eberger          ###   ########.fr       */
+/*   Updated: 2023/03/31 16:14:00 by eberger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,30 @@ int	test_map_close(t_list *list, t_maps *map)
 	return (1);
 }
 
+char	*test_map(t_maps *map)
+{
+	char	*next_line;
+
+	map->fd = open(map->path, O_RDONLY);
+	if (map->fd < 0)
+		return (error_map("map introuvable", NULL), NULL);
+	next_line = get_next_line(map->fd);
+	if (!next_line)
+		return (error_map("map vide", NULL), NULL);
+	map->line = 0;
+	map->column = ft_strlen(next_line) - 1;
+	return (next_line);
+}
+
 int	create_map(t_maps *map)
 {
 	t_list	*lst;
 	char	*next_line;
 
-	map->fd = open(map->path, O_RDONLY);
-	if (map->fd < 0)
-		return (error_map("map introuvable", NULL));
-	next_line = get_next_line(map->fd);
 	lst = NULL;
-	map->line = 0;
-	map->column = ft_strlen(next_line) - 1;
+	next_line = test_map(map);
+	if (!next_line)
+		return (0);
 	while (next_line)
 	{
 		next_line[ft_strlen(next_line) - 1] = 0;
@@ -59,14 +71,6 @@ int	create_map(t_maps *map)
 	map->height = BOX * map->line;
 	close(map->fd);
 	return (1);
-}
-
-void	print(t_vars *vars, mlx_image_t *img, int *loc, int z)
-{
-	int	inst_img;
-
-	inst_img = mlx_image_to_window(vars->mlx, img, loc[1], loc[0]);
-	mlx_set_instance_depth(&(img->instances[inst_img]), z);
 }
 
 int	print_case(char c, int *loc, t_vars *vars)

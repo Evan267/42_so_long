@@ -12,7 +12,8 @@ CC		= gcc
 
 CFLAGS	= -Wall -Wextra -Werror
 
-.c.o:	${CC} ${CFLAGS} -I ${HEAD} -Ilibft -c $< -o ${<:.c=.o}
+.c.o:	
+			${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 
 ${NAME}:	${LFT} ${OBJS}
 			${CC} ${OBJS} -L ./libft -lft "/Users/$$USER/MLX42/build/libmlx42.a" -lglfw -L"/Users/$$USER/.brew/opt/glfw/lib/" -framework Cocoa -framework OpenGL -framework IOKit -o ${NAME}

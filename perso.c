@@ -6,7 +6,7 @@
 /*   By: eberger <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 14:18:42 by eberger           #+#    #+#             */
-/*   Updated: 2023/03/02 11:01:59 by eberger          ###   ########.fr       */
+/*   Updated: 2023/03/31 16:06:53 by eberger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,12 @@ void	move_pers(t_vars *vars, int orientation)
 		vars->assets->img_pers_right->instances->enabled = 0;
 	vars->pers->orientation = orientation;
 	print_pers(vars);
+}
+
+void	print(t_vars *vars, mlx_image_t *img, int *loc, int z)
+{
+	int	inst_img;
+
+	inst_img = mlx_image_to_window(vars->mlx, img, loc[1], loc[0]);
+	mlx_set_instance_depth(&(img->instances[inst_img]), z);
 }
