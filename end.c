@@ -6,7 +6,7 @@
 /*   By: eberger <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/06 10:19:21 by eberger           #+#    #+#             */
-/*   Updated: 2023/03/31 15:28:17 by eberger          ###   ########.fr       */
+/*   Updated: 2023/06/27 09:53:27 by eberger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	free_init_var(t_vars *vars, t_list **list, t_assets **assets)
 	free(vars->pers);
 	free(vars->map);
 	free(vars);
-	return (0);
+	return (1);
 }
 
 int	error_map(char *str, t_list **list)
@@ -31,7 +31,7 @@ int	error_map(char *str, t_list **list)
 		ft_lstclear(list, &free);
 	ft_putendl_fd("Error", 2);
 	ft_putendl_fd(str, 2);
-	return (0);
+	return (1);
 }
 
 void	delete_img(t_vars *vars)
@@ -72,4 +72,5 @@ void	end(t_vars *vars)
 	vars->end = 1;
 	free(counter);
 	free(str);
+	system("leaks so_long");
 }

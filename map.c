@@ -6,7 +6,7 @@
 /*   By: eberger <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 11:57:43 by eberger           #+#    #+#             */
-/*   Updated: 2023/03/31 16:14:00 by eberger          ###   ########.fr       */
+/*   Updated: 2023/06/27 09:42:39 by eberger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ int	create_map(t_maps *map)
 		return (0);
 	while (next_line)
 	{
-		next_line[ft_strlen(next_line) - 1] = 0;
+		if (next_line[ft_strlen(next_line) - 1] == '\n')
+			next_line[ft_strlen(next_line) - 1] = 0;
 		ft_lstadd_back(&lst, ft_lstnew(next_line));
 		if (map->column != (int)ft_strlen(next_line))
 			return (error_map("map : lignes de longueur differentes", &(lst)));
