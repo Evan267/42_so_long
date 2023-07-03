@@ -6,7 +6,7 @@
 /*   By: eberger <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/06 10:19:21 by eberger           #+#    #+#             */
-/*   Updated: 2023/06/27 09:53:27 by eberger          ###   ########.fr       */
+/*   Updated: 2023/07/03 13:42:10 by eberger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,4 @@ void	end(t_vars *vars)
 	vars->end = 1;
 	free(counter);
 	free(str);
-	system("leaks so_long");
 }
