@@ -6,7 +6,7 @@
 /*   By: eberger <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 11:43:15 by eberger           #+#    #+#             */
-/*   Updated: 2023/03/31 15:30:02 by eberger          ###   ########.fr       */
+/*   Updated: 2023/07/05 11:06:08 by eberger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,5 +119,5 @@ int	algo_test(char *path)
 	flood(&list_map, i, loc[0], loc[1]);
 	if (i[0] != items || i[1] != 1)
 		return (error_map("Item ou sortie non accessible", &list_map));
-	return (ft_lstclear(&list_map, &free), 1);
+	return (ft_lstclear(&list_map, &free), 0);
 }

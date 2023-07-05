@@ -6,7 +6,7 @@
 /*   By: eberger <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 11:57:43 by eberger           #+#    #+#             */
-/*   Updated: 2023/06/27 09:42:39 by eberger          ###   ########.fr       */
+/*   Updated: 2023/07/05 11:15:22 by eberger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,12 @@ int	create_map(t_maps *map)
 			next_line[ft_strlen(next_line) - 1] = 0;
 		ft_lstadd_back(&lst, ft_lstnew(next_line));
 		if (map->column != (int)ft_strlen(next_line))
-			return (error_map("map : lignes de longueur differentes", &(lst)));
+			return (error_map("map : lignes de longueur differentes", &(lst)), 0);
 		next_line = get_next_line(map->fd);
 		(map->line)++;
 	}
 	if (!test_map_close(lst, map))
-		return (error_map("map: pas encadre par des obstacles", &(lst)));
+		return (error_map("map: pas encadre par des obstacles", &(lst)), 0);
 	map->width = BOX * map->column;
 	map->height = BOX * map->line;
 	close(map->fd);
@@ -81,7 +81,7 @@ int	print_case(char c, int *loc, t_vars *vars)
 	pix[0] = loc[0] * BOX;
 	pix[1] = loc[1] * BOX;
 	if (!ft_strchr("01CEP", c))
-		return (error_map("La carte ne peut contenir aue 01CEP", NULL));
+		return (error_map("La carte ne peut contenir aue 01CEP", NULL), 0);
 	if (c == '1')
 		print(vars, vars->assets->img_lava, pix, 1);
 	else
