@@ -6,7 +6,7 @@
 /*   By: eberger <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 14:54:22 by eberger           #+#    #+#             */
-/*   Updated: 2023/03/03 11:04:50 by eberger          ###   ########.fr       */
+/*   Updated: 2023/07/05 09:51:23 by eberger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	get_item(t_vars *vars, int x, int y)
 	i = 0;
 	lock = vars->assets->img_items_lock;
 	unlock = vars->assets->img_items_unlock;
-	while (i < lock->count)
+	while (i < (int)lock->count)
 	{
 		if (lock->instances[i].x == x * BOX
 			&& lock->instances[i].y == y * BOX
